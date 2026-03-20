@@ -307,7 +307,9 @@ function installQuestions() {
 
     # I1
     RANDOM_AWG_I1=$(shuf -i3-1000 -n1)
-    local re='^(b[[:space:]]+0x[0-9A-Fa-f]+|c|t|r[[:space:]]+(1000|[1-9][0-9]{0,2}|0)|rc[[:space:]]+(1000|[1-9][0-9]{0,2}|0)|rd[[:space:]]+(1000|[1-9][0-9]{0,2}|0))$'
+    local tag='(b[[:space:]]+0x[0-9A-Fa-f]+|c|t|r[[:space:]]+(1000|[1-9][0-9]{0,2}|0)|rc[[:space:]]+(1000|[1-9][0-9]{0,2}|0)|rd[[:space:]]+(1000|[1-9][0-9]{0,2}|0))'
+    local re="^(<${tag}>)+$"
+
     until [[ ${SERVER_AWG_I1} =~ $re ]]; do
         read -rp "AmneziaWG require I1, read https://docs.amnezia.org/documentation/amnezia-wg/#how-it-works : " -e -i "<r ${RANDOM_AWG_I1}><t>" SERVER_AWG_I1
     done
