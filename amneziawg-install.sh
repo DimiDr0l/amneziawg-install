@@ -182,14 +182,8 @@ function installQuestions() {
     done
 
     # Detect public IPv4 or IPv6 address and pre-fill for the user
-    SERVER_PUB_IP=$(ip -4 addr | sed -ne 's|^.* inet \([^/]*\)/.* scope global.*$|\1|p' | awk '{print $1}' | head -1)
+    SERVER_PUB_IP=$(curl -sf -4 ifconfig.co)
 
-    if [[ "$USE_IPV6" = 'y' ]]; then
-        if [[ -z ${SERVER_PUB_IP} ]]; then
-            # Detect public IPv6 address
-            SERVER_PUB_IP=$(ip -6 addr | sed -ne 's|^.* inet6 \([^/]*\)/.* scope global.*$|\1|p' | head -1)
-        fi
-    fi
     read -rp "Public IPv4 or IPv6 address or domain: " -e -i "${SERVER_PUB_IP}" SERVER_PUB_IP
 
     # Detect public interface and pre-fill for the user
@@ -508,7 +502,7 @@ PostUp = ip6tables -t nat -A POSTROUTING -o ${SERVER_PUB_NIC} -j MASQUERADE
 PostDown = ip6tables -D INPUT -p udp --dport ${SERVER_PORT} -j ACCEPT
 PostDown = ip6tables -D FORWARD -i ${SERVER_PUB_NIC} -o ${SERVER_AWG_NIC} -j ACCEPT
 PostDown = ip6tables -D FORWARD -i ${SERVER_AWG_NIC} -j ACCEPT
-PostDown = ip6tables -t nat -D POSTROUTING -o ${SERVER_PUB_NIC} -j MASQUERADE" >> "${SERVER_AWG_CONF}"  
+PostDown = ip6tables -t nat -D POSTROUTING -o ${SERVER_PUB_NIC} -j MASQUERADE" >> "${SERVER_AWG_CONF}"
         fi
     fi
 
@@ -555,9 +549,9 @@ function newClient() {
     echo ""
     echo "Client configuration"
     echo ""
-    echo "The client name must consist of alphanumeric character(s). It may also include underscores or dashes and can't exceed 15 chars."
+    echo "The client name must consist of alphanumeric character(s). It may also include underscores or dashes and can't exceed 32 chars."
 
-    until [[ ${CLIENT_NAME} =~ ^[a-zA-Z0-9_-]+$ && ${CLIENT_EXISTS} == '0' && ${#CLIENT_NAME} -lt 16 ]]; do
+    until [[ ${CLIENT_NAME} =~ ^[a-zA-Z0-9_-]+$ && ${CLIENT_EXISTS} == '0' && ${#CLIENT_NAME} -lt 32 ]]; do
         read -rp "Client name: " -e CLIENT_NAME
         CLIENT_EXISTS=$(grep -c -E "^### Client ${CLIENT_NAME}\$" "${SERVER_AWG_CONF}")
 
