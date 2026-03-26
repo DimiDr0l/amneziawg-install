@@ -1775,6 +1775,8 @@ function showClientQR() {
     # match the selected number to a client name
     CLIENT_NAME=$(grep -E "^### Client" "${SERVER_AWG_CONF}" | cut -d ' ' -f 3 | sed -n "${CLIENT_NUMBER}"p)
 
+    local HOME_DIR
+    HOME_DIR=$(getHomeDirForClient "${CLIENT_NAME}")
     # Get the home directory for the client
     CLIENT_CONFIG="${HOME_DIR}/${SERVER_AWG_NIC}-client-${CLIENT_NAME}.conf"
 
