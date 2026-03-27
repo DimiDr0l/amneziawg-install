@@ -2780,7 +2780,7 @@ function manageMenu() {
     echo "   44) Regenerate all client configs (using current server parameters)"
     echo "   5) Uninstall AmneziaWG"
     echo "   6) Exit"
-    until [[ ${MENU_OPTION} =~ ^[1-6]$ ]]; do
+    until [[ ${MENU_OPTION} =~ ^[1-6]|44$ ]]; do
         read -rp "Select an option [1-6]: " MENU_OPTION
     done
     case "${MENU_OPTION}" in
